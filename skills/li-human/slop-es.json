@@ -1,0 +1,667 @@
+{
+  "version": "1.3-es-mx",
+  "note": "Léxico en español de México para humanize.py y detect.py (usar con --lexicon slop-es.json). Borrador para revisión.",
+  "_notas": [
+    "Se quitó la regla raya→coma: en español la raya es ortografía correcta. Queda como estructura marcada, no se corrige sola.",
+    "Solo se reemplazan en automático términos sin problema de concordancia ni conjugación. Lo conjugable o con género va a 'structures' (se marca, no se toca).",
+    "Ningún reemplazo es vacío: el script deja la palabra siguiente en minúscula y puede dejar comas huérfanas.",
+    "Ninguna entrada empieza ni termina con signo (¿ ?): el script usa \\b y esas entradas nunca harían match.",
+    "'Fundamental' y 'aplica para' no se reemplazan: tienen uso técnico legítimo en materia fiscal.",
+    "v1.1: 'peso' en structures: 0 = aviso (se reporta, no resta en VOICE); 1 = huella.",
+    "v1.1: la sección 'detector' la lee el detect.py adaptado; el detect.py original la ignora.",
+    "v1.2: el HUMAN SCORE es referencia, no veredicto (falló en prueba a ciegas: texto de IA con 74.1). La herramienta principal es humanize.py --report.",
+    "v1.2: comillas curvas: única señal consistente en 12 textos (0 en posts propios, 3 de 4 textos de IA). humanize.py las cambia a rectas automáticamente.",
+    "v1.3: avisos (peso 0) para espejos en dos líneas, 'no significa… significa', 'no porque… sino porque', anáfora y cadenas de fragmentos. Son recursos que también usa el autor: se reportan, no se castigan."
+  ],
+  "invisible": [
+    {
+      "cp": "U+200B",
+      "name": "ZERO WIDTH SPACE",
+      "action": "delete"
+    },
+    {
+      "cp": "U+200C",
+      "name": "ZERO WIDTH NON-JOINER",
+      "action": "delete"
+    },
+    {
+      "cp": "U+200D",
+      "name": "ZERO WIDTH JOINER",
+      "action": "delete"
+    },
+    {
+      "cp": "U+2060",
+      "name": "WORD JOINER",
+      "action": "delete"
+    },
+    {
+      "cp": "U+FEFF",
+      "name": "ZERO WIDTH NO-BREAK SPACE / BOM",
+      "action": "delete"
+    },
+    {
+      "cp": "U+00AD",
+      "name": "SOFT HYPHEN",
+      "action": "delete"
+    },
+    {
+      "cp": "U+180E",
+      "name": "MONGOLIAN VOWEL SEPARATOR",
+      "action": "delete"
+    },
+    {
+      "cp": "U+061C",
+      "name": "ARABIC LETTER MARK",
+      "action": "delete"
+    },
+    {
+      "cp": "U+200E",
+      "name": "LEFT-TO-RIGHT MARK",
+      "action": "delete"
+    },
+    {
+      "cp": "U+200F",
+      "name": "RIGHT-TO-LEFT MARK",
+      "action": "delete"
+    },
+    {
+      "cp": "U+E0000-U+E007F",
+      "name": "TAG CHARACTERS (invisible ASCII smuggling)",
+      "action": "delete"
+    },
+    {
+      "cp": "U+00A0",
+      "name": "NO-BREAK SPACE",
+      "action": "space"
+    },
+    {
+      "cp": "U+202F",
+      "name": "NARROW NO-BREAK SPACE",
+      "action": "space"
+    },
+    {
+      "cp": "U+2009",
+      "name": "THIN SPACE",
+      "action": "space"
+    },
+    {
+      "cp": "U+2007",
+      "name": "FIGURE SPACE",
+      "action": "space"
+    },
+    {
+      "cp": "U+2003",
+      "name": "EM SPACE",
+      "action": "space"
+    },
+    {
+      "cp": "U+2002",
+      "name": "EN SPACE",
+      "action": "space"
+    }
+  ],
+  "typographic": [
+    {
+      "from": "–",
+      "name": "EN DASH",
+      "to": "-"
+    },
+    {
+      "from": "‘",
+      "name": "LEFT SINGLE QUOTE",
+      "to": "'"
+    },
+    {
+      "from": "’",
+      "name": "RIGHT SINGLE QUOTE",
+      "to": "'"
+    },
+    {
+      "from": "“",
+      "name": "LEFT DOUBLE QUOTE",
+      "to": "\""
+    },
+    {
+      "from": "”",
+      "name": "RIGHT DOUBLE QUOTE",
+      "to": "\""
+    },
+    {
+      "from": "…",
+      "name": "HORIZONTAL ELLIPSIS",
+      "to": "..."
+    },
+    {
+      "from": "′",
+      "name": "PRIME",
+      "to": "'"
+    },
+    {
+      "from": "·",
+      "name": "MIDDLE DOT",
+      "to": "-"
+    },
+    {
+      "from": "•",
+      "name": "BULLET",
+      "to": "-"
+    },
+    {
+      "from": "→",
+      "name": "RIGHTWARDS ARROW",
+      "to": "->"
+    }
+  ],
+  "words": [
+    {
+      "find": "a efecto de",
+      "replace": "para",
+      "family": "conectores"
+    },
+    {
+      "find": "a efectos de",
+      "replace": "para",
+      "family": "conectores"
+    },
+    {
+      "find": "en virtud de que",
+      "replace": "porque",
+      "family": "conectores"
+    },
+    {
+      "find": "en virtud de",
+      "replace": "por",
+      "family": "conectores"
+    },
+    {
+      "find": "en el marco de",
+      "replace": "en",
+      "family": "conectores"
+    },
+    {
+      "find": "en el ámbito de",
+      "replace": "en",
+      "family": "conectores"
+    },
+    {
+      "find": "en relación con",
+      "replace": "sobre",
+      "family": "conectores"
+    },
+    {
+      "find": "en relación a",
+      "replace": "sobre",
+      "family": "conectores"
+    },
+    {
+      "find": "derivado de lo anterior",
+      "replace": "por eso",
+      "family": "conectores"
+    },
+    {
+      "find": "por consiguiente",
+      "replace": "por eso",
+      "family": "conectores"
+    },
+    {
+      "find": "no obstante lo anterior",
+      "replace": "aun así",
+      "family": "conectores"
+    },
+    {
+      "find": "no obstante que",
+      "replace": "aunque",
+      "family": "conectores"
+    },
+    {
+      "find": "no obstante",
+      "replace": "aun así",
+      "family": "conectores"
+    },
+    {
+      "find": "asimismo",
+      "replace": "también",
+      "family": "conectores"
+    },
+    {
+      "find": "de igual manera",
+      "replace": "también",
+      "family": "conectores"
+    },
+    {
+      "find": "de igual forma",
+      "replace": "también",
+      "family": "conectores"
+    },
+    {
+      "find": "en la actualidad",
+      "replace": "hoy",
+      "family": "conectores"
+    },
+    {
+      "find": "hoy en día",
+      "replace": "hoy",
+      "family": "conectores"
+    },
+    {
+      "find": "el día de hoy",
+      "replace": "hoy",
+      "family": "conectores"
+    },
+    {
+      "find": "de manera significativa",
+      "replace": "mucho",
+      "family": "conectores"
+    },
+    {
+      "find": "de forma significativa",
+      "replace": "mucho",
+      "family": "conectores"
+    },
+    {
+      "find": "llevar a cabo",
+      "replace": "hacer",
+      "family": "verbos"
+    },
+    {
+      "find": "se lleva a cabo",
+      "replace": "se hace",
+      "family": "verbos"
+    },
+    {
+      "find": "se llevó a cabo",
+      "replace": "se hizo",
+      "family": "verbos"
+    },
+    {
+      "find": "se llevará a cabo",
+      "replace": "se hará",
+      "family": "verbos"
+    },
+    {
+      "find": "juega un papel fundamental",
+      "replace": "es clave",
+      "family": "verbos"
+    },
+    {
+      "find": "juega un papel crucial",
+      "replace": "es clave",
+      "family": "verbos"
+    },
+    {
+      "find": "juega un papel clave",
+      "replace": "es clave",
+      "family": "verbos"
+    },
+    {
+      "find": "juegan un papel fundamental",
+      "replace": "son clave",
+      "family": "verbos"
+    },
+    {
+      "find": "juegan un papel crucial",
+      "replace": "son clave",
+      "family": "verbos"
+    },
+    {
+      "find": "juegan un papel clave",
+      "replace": "son clave",
+      "family": "verbos"
+    },
+    {
+      "find": "crucial",
+      "replace": "clave",
+      "family": "adjetivos"
+    },
+    {
+      "find": "cruciales",
+      "replace": "clave",
+      "family": "adjetivos"
+    },
+    {
+      "find": "robusto",
+      "replace": "sólido",
+      "family": "adjetivos"
+    },
+    {
+      "find": "robusta",
+      "replace": "sólida",
+      "family": "adjetivos"
+    },
+    {
+      "find": "robustos",
+      "replace": "sólidos",
+      "family": "adjetivos"
+    },
+    {
+      "find": "robustas",
+      "replace": "sólidas",
+      "family": "adjetivos"
+    },
+    {
+      "find": "en base a",
+      "replace": "con base en",
+      "family": "calcos"
+    },
+    {
+      "find": "hace sentido",
+      "replace": "tiene sentido",
+      "family": "calcos"
+    },
+    {
+      "find": "hacen sentido",
+      "replace": "tienen sentido",
+      "family": "calcos"
+    },
+    {
+      "find": "hizo sentido",
+      "replace": "tuvo sentido",
+      "family": "calcos"
+    },
+    {
+      "find": "al final del día",
+      "replace": "al final",
+      "family": "calcos"
+    },
+    {
+      "find": "deep dive",
+      "replace": "análisis a fondo",
+      "family": "calcos"
+    },
+    {
+      "find": "game changer",
+      "replace": "parteaguas",
+      "family": "calcos"
+    },
+    {
+      "find": "game-changer",
+      "replace": "parteaguas",
+      "family": "calcos"
+    }
+  ],
+  "phrases": [
+    {
+      "find": "en la era digital",
+      "replace": "hoy",
+      "family": "aperturas"
+    },
+    {
+      "find": "en el panorama actual",
+      "replace": "hoy",
+      "family": "aperturas"
+    },
+    {
+      "find": "en un mundo cada vez más cambiante",
+      "replace": "hoy",
+      "family": "aperturas"
+    },
+    {
+      "find": "en el cambiante mundo de",
+      "replace": "en",
+      "family": "aperturas"
+    },
+    {
+      "find": "en el cambiante panorama de",
+      "replace": "en",
+      "family": "aperturas"
+    },
+    {
+      "find": "en el mundo actual",
+      "replace": "hoy",
+      "family": "aperturas"
+    }
+  ],
+  "structures": [
+    {
+      "id": "no-se-trata",
+      "regex": "(?i)\\bno se trata (?:solo |sólo |solamente |únicamente )?de [^.!?\\n]{2,60}[,.;:] se trata de\\b",
+      "name": "\"No se trata de X, se trata de Y\" [aviso]",
+      "fix": "Es parte de tu voz; solo revisa que no se repita varias veces en el mismo texto.",
+      "peso": 0
+    },
+    {
+      "id": "no-es-solo",
+      "regex": "(?i)\\bno es (?:solo|sólo|solamente|únicamente) [^.!?\\n]{2,60}[,.;:] (?:también )?es\\b",
+      "name": "\"No es solo X, es Y\" [aviso]",
+      "fix": "Es parte de tu voz; solo revisa que no se repita varias veces en el mismo texto.",
+      "peso": 0
+    },
+    {
+      "id": "no-solo-sino",
+      "regex": "(?i)\\bno (?:solo|sólo|solamente|únicamente)\\b[^.!?\\n]{2,80}\\bsino (?:también|que)\\b",
+      "name": "\"No solo X, sino también Y\" [aviso]",
+      "fix": "Es parte de tu voz; solo revisa que no se repita varias veces en el mismo texto.",
+      "peso": 0
+    },
+    {
+      "id": "revelacion",
+      "regex": "(?i)^\\s*¿?(?:el resultado|lo mejor|la clave|el detalle|la trampa|lo peor|el problema|la respuesta)\\?\\s*$",
+      "name": "Pregunta retórica de una línea",
+      "fix": "Contéstala en la misma oración en vez de montar el suspenso.",
+      "peso": 1
+    },
+    {
+      "id": "lo-que-aprendi",
+      "regex": "(?i)\\b(?:esto es )?lo que aprend[ií]\\b",
+      "name": "\"Esto es lo que aprendí\"",
+      "fix": "Di la lección. Sáltate el anuncio.",
+      "peso": 1
+    },
+    {
+      "id": "triada",
+      "regex": "(?i)\\b\\w+, \\w+ (?:y|e) \\w+\\.",
+      "name": "Tríada (regla de tres) [aviso]",
+      "fix": "Es parte de tu voz; solo revisa que no se repita varias veces en el mismo texto.",
+      "peso": 0
+    },
+    {
+      "id": "rocket",
+      "regex": "[\\U0001F680\\U0001F525\\U0001F4A1\\u2728\\U0001F3AF]",
+      "name": "Rocket / fire / bulb / sparkle / dart emoji",
+      "fix": "One emoji max, and not one of these five.",
+      "peso": 0.5
+    },
+    {
+      "id": "hashtags",
+      "regex": "(?:#\\w+[ \\t]*){5,}",
+      "name": "Muro de hashtags (5+)",
+      "fix": "Tres hashtags como máximo.",
+      "peso": 1
+    },
+    {
+      "id": "autorreferencia",
+      "regex": "(?i)\\bcomo (?:un )?(?:modelo de lenguaje|asistente de (?:ia|inteligencia artificial))\\b",
+      "name": "El modelo hablando de sí mismo",
+      "fix": "Borra la oración.",
+      "peso": 1
+    },
+    {
+      "id": "cierre-ensayo",
+      "regex": "(?i)^\\s*(?:en resumen|en conclusión|para concluir|en síntesis|para cerrar)\\b",
+      "name": "Cierre de ensayo",
+      "fix": "Un post no necesita párrafo de conclusiones.",
+      "peso": 1
+    },
+    {
+      "id": "carnada",
+      "regex": "(?i)(?:¿?\\s*(?:estás de acuerdo|están de acuerdo|qué opinas|ustedes qué opinan|qué opinan|me equivoco|quién más)\\s*\\?|te leo en (?:los )?comentarios|déjame tu comentario|comparte si te sirvi[óo]|guarda este post)\\s*$",
+      "name": "Carnada de interacción refleja",
+      "fix": "Si preguntas, que sea algo que solo tú podrías preguntar sobre lo que acabas de decir.",
+      "peso": 1
+    },
+    {
+      "id": "relleno-apertura",
+      "regex": "(?i)\\b(?:cabe (?:destacar|señalar|mencionar|resaltar) que|es importante (?:destacar|señalar|mencionar|resaltar) que|vale la pena (?:mencionar|destacar) que|sin lugar a dudas|sin duda alguna|en este sentido|dicho lo anterior|dicho esto)\\b",
+      "name": "Muletilla de apertura",
+      "fix": "Bórrala y arranca con el dato. (Se marca en vez de borrarse porque el script deja la siguiente palabra en minúscula.)",
+      "peso": 1
+    },
+    {
+      "id": "apertura-linkedin",
+      "regex": "(?i)\\b(?:me complace (?:anunciar|compartir)|me emociona (?:anunciar|compartir)|con (?:mucho|gran) orgullo (?:les )?(?:comparto|anuncio)|estoy (?:muy )?feliz de (?:anunciar|compartir)|sin más preámbulo|la verdad incómoda es|abróchate el cinturón|imagina un mundo (?:donde|en el que))\\b",
+      "name": "Apertura de plantilla de LinkedIn",
+      "fix": "Empieza por lo que pasó, no por cómo te sientes al contarlo.",
+      "peso": 1
+    },
+    {
+      "id": "cierre-linkedin",
+      "regex": "(?i)\\b(?:léelo (?:de nuevo|otra vez)|el futuro ya (?:está|llegó) aquí|el futuro es hoy|la decisión es tuya|reflexionemos)\\b",
+      "name": "Cierre de plantilla de LinkedIn",
+      "fix": "Termina con la idea más concreta del post.",
+      "peso": 1
+    },
+    {
+      "id": "verbos-consultor",
+      "regex": "(?i)\\b(?:potenci(?:ar|a|an|ó|amos|ando|ado|ada|ados|adas)|apalanc\\w+|empoder\\w+|revolucion(?:ar|a|an|ó|ando|ado)|disruptiv\\w+|transformador(?:a|es|as)?)\\b",
+      "name": "Verbo o adjetivo de consultor",
+      "fix": "Cámbialo por el verbo concreto: usar, subir, cambiar, bajar. Ojo con la concordancia.",
+      "peso": 1
+    },
+    {
+      "id": "sustantivos-inflados",
+      "regex": "(?i)\\b(?:sinergias?|ecosistemas?|paradigmas?|hoja de ruta|un antes y un después|sin precedentes|de vanguardia|de clase mundial|sinnúmero de|amplia gama de|infinidad de)\\b",
+      "name": "Sustantivo o frase inflada",
+      "fix": "Nómbralo por lo que es. Si no sabes qué es, sobra.",
+      "peso": 1
+    },
+    {
+      "id": "fundamental",
+      "regex": "(?i)\\bfundamental(?:es|mente)?\\b",
+      "name": "\"Fundamental\"",
+      "fix": "Si es 'derechos' o 'principios fundamentales', déjalo. Si es muletilla, cámbialo por 'clave' o quítalo.",
+      "peso": 0
+    },
+    {
+      "id": "calcos",
+      "regex": "(?i)\\b(?:customiz\\w+|accionables?|impact(?:ar|a|an|ó|ando|ado|ada|ados|adas)|mover la aguja|es por eso que|es por ello que)\\b",
+      "name": "Calco del inglés",
+      "fix": "Usa el término de uso profesional en México: personalizar, concreto, afectar, notarse, por eso.",
+      "peso": 1
+    },
+    {
+      "id": "raya",
+      "regex": "—",
+      "name": "Raya (—) [aviso]",
+      "fix": "Inciso cerrado o viñeta: correcto. Raya suelta o pegada sin espacios: cámbiala por punto o coma. El panel solo castiga estas últimas.",
+      "peso": 0
+    },
+    {
+      "id": "flecha",
+      "regex": "→",
+      "name": "Flecha (→)",
+      "fix": "Usa 👉, viñeta o reescribe como oración. No apareció en ninguno de tus textos.",
+      "peso": 1
+    },
+    {
+      "id": "raya-pegada",
+      "regex": "\\w—\\w",
+      "name": "Raya pegada sin espacios (convención del inglés)",
+      "fix": "En español: ' —inciso— '. Si no es inciso, usa coma o punto.",
+      "peso": 1
+    },
+    {
+      "id": "la-pregunta-es",
+      "regex": "(?i)\\bla pregunta (?:no )?es\\b",
+      "name": "\"La pregunta (no) es…\"",
+      "fix": "Haz la pregunta directo, sin anunciarla.",
+      "peso": 1
+    },
+    {
+      "id": "anuncio",
+      "regex": "(?i)\\b(?:vale la pena (?:aclarar|mencionar|marcar|dejar|destacar|señalar|decir|subrayar)|conviene (?:entender|aclarar|saber|recordar|tener claro|marcar))\\b",
+      "name": "Anuncio antes de decir algo",
+      "fix": "Di la cosa. El anuncio sobra.",
+      "peso": 1
+    },
+    {
+      "id": "remate",
+      "regex": "(?im)(?:^\\s*eso cambió\\.?\\s*$|\\bdeja de serlo\\b|\\beso lo cambia todo\\b)",
+      "name": "Remate en fragmento",
+      "fix": "Cierra con el dato o la idea concreta, no con la frase de efecto.",
+      "peso": 1
+    },
+    {
+      "id": "relleno-evento",
+      "regex": "(?i)\\b(?:tuve la oportunidad de|tuvimos la oportunidad de|muy enriquecedor|elevaron la conversación|elevar la conversación|reflexiones clave)\\b",
+      "name": "Relleno de crónica de evento",
+      "fix": "Cuenta qué pasó o qué aprendiste, en concreto.",
+      "peso": 1
+    },
+    {
+      "id": "conector-objetivo",
+      "regex": "(?i)\\bcon (?:el objetivo|el fin|la finalidad) de\\b",
+      "name": "\"Con el objetivo / fin / finalidad de\" [aviso]",
+      "fix": "Si es conector, cámbialo por 'para'. Si 'objetivo' es sustantivo (\"alineado con el objetivo de X\"), déjalo.",
+      "peso": 0
+    },
+    {
+      "id": "plantilla",
+      "regex": "(?i)\\[(?:insertar|inserta|agregar|agrega|poner|pon|link|liga|url|enlace|nombre|fecha|dato|cifra|monto)[^\\]\\n]*\\]|\\{\\{[^}\\n]+\\}\\}",
+      "name": "Marcador de plantilla sin llenar",
+      "fix": "Llénalo con el dato real o bórralo antes de publicar.",
+      "peso": 1
+    },
+    {
+      "id": "espejo-lineas",
+      "regex": "(?i)\\bno (?:solo|sólo|solamente|únicamente)\\b[^\\n]{0,120}\\n(?:[ \\t]*\\n)*[ \\t]*sino\\b",
+      "name": "\"No solo… / Sino…\" partido en dos líneas [aviso]",
+      "fix": "Revisa si el espejo aporta o si basta con la segunda mitad.",
+      "peso": 0
+    },
+    {
+      "id": "no-significa",
+      "regex": "(?i)\\bno significa\\b[\\s\\S]{0,300}?\\bsignifica que\\b",
+      "name": "\"No significa… / Significa que…\" [aviso]",
+      "fix": "Di directamente lo que sí significa.",
+      "peso": 0
+    },
+    {
+      "id": "no-porque-sino",
+      "regex": "(?i)\\bno porque\\b[^.!?]{2,160}\\bsino porque\\b",
+      "name": "\"No porque X, sino porque Y\" [aviso]",
+      "fix": "Si la X no la dijo nadie, quítala y quédate con la razón real.",
+      "peso": 0
+    },
+    {
+      "id": "anafora",
+      "regex": "(?im)^[ \\t]*([A-Za-zÁÉÍÓÚÑáéíóúñ]+)\\b[^\\n]*\\n(?:[ \\t]*\\n)*[ \\t]*\\1\\b[^\\n]*\\n(?:[ \\t]*\\n)*[ \\t]*\\1\\b",
+      "name": "Anáfora: 3+ líneas seguidas que empiezan igual [aviso]",
+      "fix": "¿Es intención retórica o inercia del borrador? Si son más de tres, junta o corta.",
+      "peso": 0
+    },
+    {
+      "id": "cadena-fragmentos",
+      "regex": "(?m)(?:^[ \\t]*[^\\s#👉•\\n][^\\n.!?]{0,30}\\.[ \\t]*\\n(?:[ \\t]*\\n)*){3,}",
+      "name": "Cadena de 3+ fragmentos cortos [aviso]",
+      "fix": "¿Ritmo buscado o relleno? Junta los que no aporten un dato.",
+      "peso": 0
+    }
+  ],
+  "detector": {
+    "normalize": "NFKC",
+    "word_regex": "[^\\W\\d_]+",
+    "voice": {
+      "person_regex": "\\b(?:yo|me|mi|mis|conmigo|nos|nosotros|nosotras|nuestro|nuestra|nuestros|nuestras)\\b|\\b(?!últimos\\b|próximos\\b|mínimos\\b|máximos\\b|legítimos\\b|íntimos\\b|primos\\b)\\w{2,}(?:amos|emos|imos)\\b|\\b(?!qué\\b|café\\b|bebé\\b|aquí\\b|así\\b|allí\\b|ahí\\b|rubí\\b|jabalí\\b|sí\\b|esté\\b|dé\\b|té\\b|sé\\b)[a-zñáéíóú]\\w*(?:é|í)\\b|\\b(?:creo|tengo|puedo|quiero|hago|digo|pienso|decido|dejo|pregunto|veo|estoy|soy|voy|doy|sigo|busco|encuentro|necesito|prefiero|recomiendo|invito|agradezco|espero|construyo|aprendo|entiendo|confieso|quedo|estuve|sé)\\b",
+      "person_human": 4.5,
+      "person_machine": 1.0,
+      "weight_person": 0.6,
+      "weight_tells": 0.4
+    },
+    "specificity": {
+      "proper_regex": "(?<![.!?¿¡:]\\s)(?<!^)\\b[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}\\b",
+      "unique_regex": [
+        "\\b[A-ZÁÉÍÓÚÑ]{2,}\\b",
+        "\\b[A-Z][a-z]+[A-Z]\\w*\\b",
+        "\\b[a-z]+(?:-[a-z]+){2,}\\b"
+      ],
+      "count_regex": [
+        "\\b(?:art\\.?|artículo|regla|fracc\\.?|fracción)\\s*\\d[\\w.\\-]*"
+      ]
+    },
+    "fingerprint": {
+      "raya_mode": "es",
+      "ellipsis_weight": 0
+    },
+    "verdict": false
+  }
+}

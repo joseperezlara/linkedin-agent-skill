@@ -1,98 +1,96 @@
 ---
 name: li-human
 description: >-
-  Strip the machine fingerprint out of any draft - em dashes, AI slop words,
-  invisible watermark characters - and score it against a five-check detection
-  panel before it goes out. Use whenever text needs to sound human, when the
-  user says humanize, "does this sound like AI", "remove the em dashes", "de-slop
-  this", "will this get flagged", or before any LinkedIn post, comment, reply
-  or DM is shown to the user.
+  Limpia las huellas de máquina de un borrador (caracteres invisibles, comillas
+  curvas, léxico de relleno, marcadores de plantilla sin llenar) y reporta las
+  estructuras que conviene reescribir antes de publicar. Funciona en español de
+  México (slop-es.json) y en inglés (slop.json). Úsala siempre antes de mostrar
+  un post, comentario, respuesta o DM de LinkedIn, y cuando el usuario diga
+  "humaniza esto", "¿suena a IA?", "límpialo", "revisa las huellas", humanize,
+  "does this sound like AI" o "de-slop this".
 ---
 
-# li-human
+# li-human (fork en español)
 
-Two tools live in this folder and they both actually run. Use them. Do not
-eyeball this.
+En esta carpeta hay dos herramientas que se ejecutan de verdad. Úsalas; no
+revises a ojo.
+
+## Elige el léxico por idioma
+
+- Texto en español: `--lexicon slop-es.json`
+- Texto en inglés: sin `--lexicon` (usa `slop.json`, el original del repo)
 
 ```bash
-python3 humanize.py draft.txt --report        # clean it, show what changed
-python3 detect.py draft.txt                    # score it, five checks
-python3 detect.py before.txt after.txt         # prove the delta
+python3 humanize.py borrador.txt -o limpio.txt --report --lexicon slop-es.json   # limpia y reporta
+python3 detect.py borrador.txt limpio.txt --lexicon slop-es.json                  # antes y después, como referencia
 ```
 
-Both read `slop.json`, which is the lexicon: 100+ stock words and phrases with
-plain-English replacements, 17 invisible character classes, 11 typographic
-substitutions, and 11 structural tells. It is meant to be edited. If the user
-has a word they always use that the lexicon strips, remove it from the file.
+## Qué se corrige solo
 
-## What gets fixed automatically
+1. **Caracteres invisibles.** Espacios de ancho cero, marcas de orden de bytes,
+   caracteres de etiqueta Unicode y espacios duros. `humanize.py` los borra todos.
+2. **Tipografía.** Comillas curvas a rectas, puntos suspensivos a tres puntos,
+   raya corta a guion. **La raya (—) no se toca en español**: el inciso cerrado
+   ( —así— ) y la raya de viñeta son ortografía correcta.
+3. **Léxico.** Solo reemplazos sin riesgo de concordancia ni de sentido:
+   "a efecto de" → "para", "en virtud de que" → "porque", "hace sentido" →
+   "tiene sentido", "en base a" → "con base en", robusto/a/os/as →
+   sólido/a/os/as, entre otros.
 
-**1. Invisible characters.** Zero-width spaces and joiners, word joiners,
-soft hyphens, byte-order marks, Unicode tag characters, non-breaking and
-narrow spaces. A keyboard does not produce these. They survive copy-paste,
-they are invisible in every editor, and they are the single most mechanical
-thing in generated text. `humanize.py` deletes every one, including any
-remaining Unicode format character it does not have a name for.
+## Qué NO se corrige solo
 
-**2. Typography.** Em dash to comma, en dash to hyphen, curly quotes to
-straight, ellipsis to three dots, bullet character to hyphen. The em dash pass
-is the one that matters: it collapses ` — ` to `, ` and then cleans up the
-double punctuation that leaves behind.
+El reporte trae dos tipos de marca. Nunca reescribas en automático ninguna de
+las dos: cambiar la forma de una oración requiere criterio.
 
-**3. The slop lexicon.** delve, leverage, robust, seamless, crucial, tapestry,
-testament to, moreover, "in today's fast-paced world", "let that sink in" and
-the rest, each swapped for a plain word, with capitalisation preserved and
-URLs left untouched.
+**Huellas** (restan en el puntaje). Propón una reescritura concreta para cada
+una y espera la aprobación del usuario:
+- Marcadores de plantilla sin llenar: `[INSERTAR…]`, `{{…}}`
+- Flecha →, raya pegada sin espacios (convención del inglés)
+- "La pregunta (no) es…", anuncios como "vale la pena aclarar" o "conviene entender"
+- Remates en fragmento ("Eso cambió.", "deja de serlo")
+- Muletillas de apertura, aperturas y cierres de plantilla de LinkedIn,
+  carnada de interacción, relleno de crónica de evento
+- Verbos de consultor, sustantivos inflados, calcos del inglés
+- Muros de hashtags (5 o más)
 
-## What does NOT get fixed automatically
+**Avisos** (no restan; están marcados con `[aviso]`). Son recursos que el autor
+también usa en sus propios textos:
+- "No es X. Es Y." y sus variantes, series de tres, anáforas, cadenas de fragmentos
+- "Con el objetivo de…" (puede ser conector o sustantivo)
+- "Fundamental" (puede ser técnico: derechos o principios fundamentales)
 
-Structural tells get **flagged, not rewritten**, because changing the shape of
-a sentence needs judgement:
+Con los avisos, **pregunta en vez de corregir**: "¿esto es intención tuya o
+inercia del borrador?". Solo sugiere cambio si se repiten varias veces en el
+mismo texto.
 
-- "It's not just X, it's Y" and "not only X but also Y"
-- Rule-of-three triads
-- Rhetorical one-word question lines: "The result?"
-- Rocket, fire, bulb, sparkle and dart emoji
-- Hashtag walls
-- Reflex engagement bait: "Thoughts?", "Agree?", "Who else?"
-- Uniform sentence length and uniform bullet length
+## Limitación conocida: negritas Unicode
 
-That list is your job. Rewrite each flagged line by hand, keeping the meaning,
-then re-run `detect.py`. This is the part that moves the score from REVIEW to
-PASS, and it is the part a script cannot do.
+Las "negritas" de LinkedIn (𝗮𝘀𝗶́) son otro alfabeto. `humanize.py` no ve el
+léxico dentro de ellas. `detect.py` sí las normaliza para medir. Si el borrador
+trae negritas, revisa esos pasajes a mano contra el reporte. Nunca quites las
+negritas: son estilo del autor.
 
-## The five checks
+## El puntaje es referencia, no veredicto
 
-`detect.py` scores five signals 0-100, higher is more human:
+Con el léxico en español, `detect.py` muestra **REFERENCIA** en lugar de
+PASS / REVIEW / FLAGGED. En la prueba a ciegas, un texto de IA sacó 74 y dos
+posts escritos por el autor quedaron abajo. Por eso:
 
-| check | what it measures | machine looks like |
-| --- | --- | --- |
-| BURSTINESS | sentence-length variation | every sentence the same length |
-| SPECIFICITY | numbers, names, concrete markers per 100 words | abstract nouns, no figures |
-| SLOP DENSITY | lexicon hits per 100 words | stock vocabulary |
-| FINGERPRINT | invisible chars, em dashes, curly quotes per 1k chars | typographically perfect |
-| VOICE | contractions, person, structural tells | no contractions, staged reveals |
+- **Nunca** presentes el puntaje como prueba de que un texto "suena humano" o
+  "no será detectado".
+- Úsalo solo para comparar el antes y el después del mismo texto.
+- La herramienta principal es el reporte de `humanize.py`.
 
-The verdict weights the mean at 60% and the **weakest single check** at 40%,
-because a detector only needs one signal to fire. PASS needs an overall of 70+
-with no check below 55.
+Son heurísticas locales; nada se sube a ningún servicio. No son GPTZero,
+Originality, Copyleaks, Winston ni Turnitin, y no prometen sus resultados.
 
-## Say this honestly
+## Orden de trabajo
 
-These are five local heuristics modelled on the signals public detectors key
-on. They run entirely on the user's machine and nothing is uploaded. They are
-**not** GPTZero, Originality, Copyleaks, Winston or Turnitin, they do not call
-those APIs, and they cannot promise those verdicts. Fixing what they measure
-does tend to move those numbers, because they are measuring the same
-underlying things. That is the claim. Do not make a bigger one on the user's
-behalf, and do not tell a user their text is undetectable.
-
-## Order of operations
-
-1. `humanize.py draft.txt -o clean.txt --report`
-2. Read the structural flags. Rewrite those lines yourself.
-3. `detect.py draft.txt clean.txt` to show the before and after.
-4. If the verdict is not PASS, fix the weakest check named in the output and
-   go again. Two rounds is normal. Five means the draft was written by
-   formula, and the fix is a different draft, not more passes.
-5. Show the user the cleaned text and the score. Never the score alone.
+1. `humanize.py borrador.txt -o limpio.txt --report --lexicon slop-es.json`
+2. Muestra al usuario el texto limpio y el reporte: primero huellas, después avisos.
+3. Para cada huella, propón una reescritura. Para cada aviso, pregunta.
+4. Aplica solo lo que el usuario apruebe.
+5. Opcional: `detect.py borrador.txt limpio.txt --lexicon slop-es.json` como
+   referencia del cambio. Nunca muestres el puntaje sin el texto.
+6. Si hay datos faltantes, déjalos como marcador visible; nunca inventes cifras,
+   fechas ni nombres.

@@ -40,6 +40,22 @@ NUMBERS = re.compile(r"\b\d[\d,.]*%?\b|\$\d")
 PROPER = re.compile(r"(?<![.!?]\s)(?<!^)\b[A-Z][a-z]{2,}\b", re.MULTILINE)
 
 
+def cfg(lex, *keys, default=None):
+    """Lee lex["detector"][k1][k2]... si existe; si no, default (comportamiento original)."""
+    node = lex.get("detector", {})
+    for k in keys:
+        if not isinstance(node, dict) or k not in node:
+            return default
+        node = node[k]
+    return node
+
+
+def prepare(text, lex):
+    """Normaliza el texto SOLO para medirlo (p. ej. negritas Unicode -> letras normales)."""
+    form = cfg(lex, "normalize")
+    return unicodedata.normalize(form, text) if form else text
+
+
 def clamp(n):
     return max(0.0, min(100.0, n))
 
@@ -55,8 +71,11 @@ def sentences(text):
     return [s.strip() for s in SENT_RE.findall(text) if len(s.split()) > 2]
 
 
+_WORD_RE = WORD_RE
+
+
 def words(text):
-    return WORD_RE.findall(text)
+    return _WORD_RE.findall(text)
 
 
 def check_burstiness(text):
@@ -70,13 +89,22 @@ def check_burstiness(text):
     return score, f"variation {cv:.2f} across {len(lens)} sentences (want 0.55+)"
 
 
-def check_specificity(text):
+def check_specificity(text, lex=None):
     """Numbers, names and concrete nouns. Slop is abstract."""
     w = words(text)
     if len(w) < 25:
         return 50.0, "too short to judge"
     per100 = 100 / len(w)
-    hits = len(NUMBERS.findall(text)) + len(set(PROPER.findall(text)))
+    proper = PROPER
+    if lex and cfg(lex, "specificity", "proper_regex"):
+        proper = re.compile(cfg(lex, "specificity", "proper_regex"), re.MULTILINE)
+    names = set(proper.findall(text))
+    extra = 0
+    for rx in (cfg(lex, "specificity", "unique_regex", default=[]) if lex else []):
+        names |= set(re.findall(rx, text, re.MULTILINE))
+    for rx in (cfg(lex, "specificity", "count_regex", default=[]) if lex else []):
+        extra += len(re.findall(rx, text, re.MULTILINE | re.IGNORECASE))
+    hits = len(NUMBERS.findall(text)) + len(names) + extra
     density = hits * per100
     score = scale(density, human=6.0, machine=0.5)
     return score, f"{hits} concrete markers, {density:.1f} per 100 words (want 4+)"
@@ -103,12 +131,29 @@ def check_slop(text, lex):
     return score, detail
 
 
-def check_fingerprint(text):
+def raya_es(text):
+    """Cuenta solo las rayas que son huella en español:
+    pegadas a ambos lados (convención del inglés) o sueltas a media línea (pausa dramática).
+    No cuenta la raya de viñeta (inicio de línea) ni el inciso cerrado (dos rayas en la oración)."""
+    bad = 0
+    for line in text.splitlines():
+        body = line.lstrip()
+        if body.startswith("—"):
+            body = body[1:]
+        for sent in re.split(r"(?<=[.!?])\s+", body):
+            n = sent.count("—")
+            glued = len(re.findall(r"\w—\w", sent))
+            if n == 1 or glued:
+                bad += max(glued, 1 if n % 2 else 0)
+    return bad
+
+
+def check_fingerprint(text, lex=None):
     """Characters a phone keyboard does not produce."""
     invisible = sum(1 for c in text if unicodedata.category(c) == "Cf")
-    em = text.count("—")
+    em = raya_es(text) if (lex and cfg(lex, "fingerprint", "raya_mode") == "es") else text.count("—")
     curly = sum(text.count(c) for c in "‘’“”")
-    ellip = text.count("…")
+    ellip = text.count("…") * (cfg(lex, "fingerprint", "ellipsis_weight", default=1) if lex else 1)
     nbsp = sum(text.count(c) for c in "   ")
     total = invisible * 4 + em * 2 + curly + ellip + nbsp
     per1k = total * 1000 / max(len(text), 1)
@@ -124,8 +169,10 @@ def check_voice(text, lex):
     if len(w) < 25:
         return 50.0, "too short to judge"
     per100 = 100 / len(w)
-    contractions = len(CONTRACTIONS.findall(text)) * per100
-    person = len(PRONOUNS.findall(text)) * per100
+    person_rx = cfg(lex, "voice", "person_regex")
+    contractions = 0.0 if person_rx else len(CONTRACTIONS.findall(text)) * per100
+    person = len(re.findall(person_rx, text, re.IGNORECASE)) * per100 if person_rx \
+        else len(PRONOUNS.findall(text)) * per100
     tells = 0
     names = []
     for s in lex["structures"]:
@@ -133,19 +180,28 @@ def check_voice(text, lex):
             n = len(re.compile(s["regex"], re.MULTILINE).findall(text))
         except re.error:
             continue
-        if n:
-            tells += n
+        w8 = s.get("peso", 1)
+        if n and w8:
+            tells += n * w8
             names.append(s["id"])
     bullets = [len(b.split()) for b in re.findall(r"(?m)^\s*[-*•]\s+(.+)$", text)]
     uniform = (len(bullets) >= 3 and statistics.pstdev(bullets) < 1.6)
-    score = (scale(contractions, human=3.0, machine=0.0) * 0.35
-             + scale(person, human=8.0, machine=1.0) * 0.35
-             + clamp(100 - tells * 22) * 0.30)
+    if person_rx:
+        ph, pm = cfg(lex, "voice", "person_human"), cfg(lex, "voice", "person_machine")
+        wp, wt = cfg(lex, "voice", "weight_person", default=0.6), cfg(lex, "voice", "weight_tells", default=0.4)
+        score = scale(person, human=ph, machine=pm) * wp + clamp(100 - tells * 22) * wt
+    else:
+        score = (scale(contractions, human=3.0, machine=0.0) * 0.35
+                 + scale(person, human=8.0, machine=1.0) * 0.35
+                 + clamp(100 - tells * 22) * 0.30)
     if uniform:
         score -= 12
         names.append("uniform-bullets")
-    detail = (f"{contractions:.1f} contractions, {person:.1f} personal pronouns "
-              f"per 100 words, {tells} structural tell(s)")
+    if person_rx:
+        detail = f"{person:.1f} primera persona x100 palabras, {tells:g} huella(s) con peso"
+    else:
+        detail = (f"{contractions:.1f} contractions, {person:.1f} personal pronouns "
+                  f"per 100 words, {tells} structural tell(s)")
     if names:
         detail += " [" + ", ".join(names[:4]) + "]"
     return clamp(score), detail
@@ -155,17 +211,22 @@ CHECKS = ["BURSTINESS", "SPECIFICITY", "SLOP DENSITY", "FINGERPRINT", "VOICE"]
 
 
 def run(text, lex):
+    global _WORD_RE
+    _WORD_RE = re.compile(cfg(lex, "word_regex")) if cfg(lex, "word_regex") else WORD_RE
+    text = prepare(text, lex)
     results = {}
     results["BURSTINESS"] = check_burstiness(text)
-    results["SPECIFICITY"] = check_specificity(text)
+    results["SPECIFICITY"] = check_specificity(text, lex)
     results["SLOP DENSITY"] = check_slop(text, lex)
-    results["FINGERPRINT"] = check_fingerprint(text)
+    results["FINGERPRINT"] = check_fingerprint(text, lex)
     results["VOICE"] = check_voice(text, lex)
     scores = [results[c][0] for c in CHECKS]
     # The weakest check drags the verdict: a detector only needs one signal.
     overall = statistics.mean(scores) * 0.6 + min(scores) * 0.4
     verdict = "PASS" if overall >= 70 and min(scores) >= 55 else (
         "REVIEW" if overall >= 50 else "FLAGGED")
+    if cfg(lex, "verdict", default=True) is False:
+        verdict = "REFERENCIA"
     return results, overall, verdict
 
 
@@ -184,7 +245,10 @@ def render(results, overall, verdict, label=None, out=sys.stdout):
         print(f"  {'':<13} {detail}", file=out)
     print("-" * 62, file=out)
     print(f"  {'HUMAN SCORE':<13} {bar(overall)} {overall:5.1f}   {verdict}", file=out)
-    if verdict != "PASS":
+    if verdict == "REFERENCIA":
+        print("\n  Puntaje de referencia, no veredicto. Revisa las huellas con:"
+              "\n  humanize.py <archivo> --report --lexicon <léxico>", file=out)
+    elif verdict != "PASS":
         weakest = min(CHECKS, key=lambda c: results[c][0])
         print(f"\n  Weakest signal: {weakest}. Fix that first.", file=out)
     print("", file=out)
