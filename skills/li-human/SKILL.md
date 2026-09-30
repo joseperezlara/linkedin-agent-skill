@@ -20,10 +20,24 @@ revises a ojo.
 - Texto en español: `--lexicon slop-es.json`
 - Texto en inglés: sin `--lexicon` (usa `slop.json`, el original del repo)
 
-```bash
-python3 humanize.py borrador.txt -o limpio.txt --report --lexicon slop-es.json   # limpia y reporta
-python3 detect.py borrador.txt limpio.txt --lexicon slop-es.json                  # antes y después, como referencia
+Windows (PowerShell). Usa siempre `py -X utf8`: sin `-X utf8`, Python 3.14 o
+anterior puede fallar con acentos cuando la salida se captura:
+
+```powershell
+py -X utf8 humanize.py borrador.txt -o limpio.txt --report --lexicon slop-es.json   # limpia y reporta
+py -X utf8 detect.py borrador.txt limpio.txt --lexicon slop-es.json                  # antes y después, como referencia
 ```
+
+Mac / Linux:
+
+```bash
+python3 humanize.py borrador.txt -o limpio.txt --report --lexicon slop-es.json
+python3 detect.py borrador.txt limpio.txt --lexicon slop-es.json
+```
+
+Si el borrador se guardó desde PowerShell, el reporte puede mostrar un
+`U+FEFF (BOM)` eliminado: es la marca que agrega PowerShell al guardar en
+UTF-8, no una huella del texto.
 
 ## Qué se corrige solo
 
@@ -87,6 +101,7 @@ Originality, Copyleaks, Winston ni Turnitin, y no prometen sus resultados.
 ## Orden de trabajo
 
 1. `humanize.py borrador.txt -o limpio.txt --report --lexicon slop-es.json`
+   (con `py -X utf8` en Windows, `python3` en Mac / Linux)
 2. Muestra al usuario el texto limpio y el reporte: primero huellas, después avisos.
 3. Para cada huella, propón una reescritura. Para cada aviso, pregunta.
 4. Aplica solo lo que el usuario apruebe.

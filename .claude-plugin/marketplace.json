@@ -1,18 +1,18 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "linkedin-agent-skill",
-  "description": "The LinkedIn agent skill pack for Claude",
+  "name": "linkedin-agent-skill-es",
+  "description": "LinkedIn agent skill pack para Claude, fork en español de México",
   "owner": {
-    "name": "Jake Schincariol",
-    "url": "https://opusjake.ai"
+    "name": "José Pérez Lara",
+    "url": "https://github.com/joseperezlara"
   },
   "plugins": [
     {
-      "name": "linkedin-agent",
-      "description": "Eleven Claude skills that run a LinkedIn account, including a humanizer that strips the AI fingerprint and scores the draft on a five-check panel.",
+      "name": "linkedin-agent-es",
+      "description": "Once skills de Claude para LinkedIn, con humanizador en español de México. Basado en linkedin-agent de Jake Schincariol (MIT).",
       "source": "./",
       "category": "productivity",
-      "homepage": "https://opusjake.ai/r/linkedin-agent"
+      "homepage": "https://github.com/joseperezlara/linkedin-agent-skill"
     }
   ]
 }
