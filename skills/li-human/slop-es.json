@@ -1,5 +1,5 @@
 {
-  "version": "1.3-es-mx",
+  "version": "1.3.1-es-mx",
   "note": "Léxico en español de México para humanize.py y detect.py (usar con --lexicon slop-es.json). Borrador para revisión.",
   "_notas": [
     "Se quitó la regla raya→coma: en español la raya es ortografía correcta. Queda como estructura marcada, no se corrige sola.",
@@ -11,7 +11,8 @@
     "v1.1: la sección 'detector' la lee el detect.py adaptado; el detect.py original la ignora.",
     "v1.2: el HUMAN SCORE es referencia, no veredicto (falló en prueba a ciegas: texto de IA con 74.1). La herramienta principal es humanize.py --report.",
     "v1.2: comillas curvas: única señal consistente en 12 textos (0 en posts propios, 3 de 4 textos de IA). humanize.py las cambia a rectas automáticamente.",
-    "v1.3: avisos (peso 0) para espejos en dos líneas, 'no significa… significa', 'no porque… sino porque', anáfora y cadenas de fragmentos. Son recursos que también usa el autor: se reportan, no se castigan."
+    "v1.3: avisos (peso 0) para espejos en dos líneas, 'no significa… significa', 'no porque… sino porque', anáfora y cadenas de fragmentos. Son recursos que también usa el autor: se reportan, no se castigan.",
+    "v1.3.1: se quitan las conversiones automáticas de → a '->' y de • a '-'. La flecha ya es huella (se marca para reescribir); la viñeta • es formato propio del autor."
   ],
   "invisible": [
     {
@@ -140,16 +141,6 @@
       "from": "·",
       "name": "MIDDLE DOT",
       "to": "-"
-    },
-    {
-      "from": "•",
-      "name": "BULLET",
-      "to": "-"
-    },
-    {
-      "from": "→",
-      "name": "RIGHTWARDS ARROW",
-      "to": "->"
     }
   ],
   "words": [
