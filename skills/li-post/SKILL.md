@@ -64,15 +64,20 @@ pasted. Then, underneath:
 POST READY
 hook:      #17 Time Anchor
 length:    1,140 characters
-humanizer: 6 artefacts stripped, human score 84 PASS
+humanizer: 6 artefacts stripped, score 84 (REFERENCIA con slop-es.json)
 post at:   Tuesday 8:15am ET (from your plan)
 
-Reply "yes" to log it, or tell me what to change.
+Reply "yes" to log it, "publícalo" to publish it, or tell me what to change.
 ```
 
-**5. Never publish.** This skill produces text. The user posts it. On "yes",
-append the post to `~/.claude/linkedin/log.md` with the date, the hook used
-and the first line, so `/li-audit` has a history to work from later.
+**5. No publiques por tu cuenta.** Esta skill produce texto. Si el usuario
+pide publicar y el servidor MCP `linkedin` está disponible, sigue la sección
+"Publicar" de `/li-human` (aprobación explícita, vista previa con
+`confirm=false` y segunda confirmación). Si no está disponible, el usuario
+lo pega a mano. Con el texto en español, el puntaje de `/li-human` es
+REFERENCIA, nunca PASS. On "yes" (o después de publicar), append the post to
+`~/.claude/linkedin/log.md` with the date, the hook used and the first line,
+so `/li-audit` has a history to work from later.
 
 ## Rules that make the difference
 
