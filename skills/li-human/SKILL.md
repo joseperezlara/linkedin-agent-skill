@@ -66,16 +66,23 @@ una y espera la aprobación del usuario:
   carnada de interacción, relleno de crónica de evento
 - Verbos de consultor, sustantivos inflados, calcos del inglés
 - Muros de hashtags (5 o más)
+- "Profundicemos" / "profundizar en" y cierres de chat ("espero que esto te ayude")
 
 **Avisos** (no restan; están marcados con `[aviso]`). Son recursos que el autor
 también usa en sus propios textos:
 - "No es X. Es Y." y sus variantes, series de tres, anáforas, cadenas de fragmentos
 - "Con el objetivo de…" (puede ser conector o sustantivo)
 - "Fundamental" (puede ser técnico: derechos o principios fundamentales)
+- "Esencial" e "imprescindible" (uso fiscal legítimo: requisito esencial)
+- La misma palabra 4 veces o más en el texto (no cuenta nombres propios)
 
 Con los avisos, **pregunta en vez de corregir**: "¿esto es intención tuya o
 inercia del borrador?". Solo sugiere cambio si se repiten varias veces en el
 mismo texto.
+
+Al leer, revisa también lo que ningún script detecta: un remate en fragmento al final
+de cada párrafo, tres frases cortas seguidas para concluir y varias negaciones
+encadenadas.
 
 ## Limitación conocida: negritas Unicode
 

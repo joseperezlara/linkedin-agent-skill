@@ -164,6 +164,31 @@ def scan_structures(text, lex):
         found = pattern.findall(text)
         if found:
             flags.append({"name": s["name"], "count": len(found), "fix": s["fix"]})
+    # Optional (lexicon key "repeticion"): the same long word repeated many
+    # times reads as machine-written. Unicode bold is normalized so it counts.
+    rep = lex.get("repeticion")
+    if rep:
+        import unicodedata
+        norm = unicodedata.normalize("NFKC", text)
+        ignore = set(rep.get("ignorar", []))
+        counts, forms, lower_seen = {}, {}, set()
+        for raw in re.findall(r"[^\W\d_]+", norm):
+            w = raw.lower()
+            if len(w) < rep.get("min_len", 6) or w in ignore:
+                continue
+            key = w[:-2] if w.endswith("es") and len(w) > 7 else w[:-1] if w.endswith("s") else w
+            counts[key] = counts.get(key, 0) + 1
+            forms.setdefault(key, w)
+            if raw[0].islower():
+                lower_seen.add(key)
+        for key, n in sorted(counts.items(), key=lambda kv: -kv[1]):
+            # Words never written in lowercase are names (Andrés, Certera): skip.
+            if n >= rep.get("umbral", 4) and key in lower_seen:
+                flags.append({
+                    "name": f"\"{forms[key]}\" repetido {n} veces [aviso]",
+                    "count": n,
+                    "fix": rep.get("fix", "Cambia algunas por un sinónimo o reescribe la frase."),
+                })
     # Sentence-length uniformity is structural too.
     lens = [len(s.split()) for s in SENT_RE.findall(text) if len(s.split()) > 2]
     if len(lens) >= 4:

@@ -1,7 +1,7 @@
 {
   "name": "linkedin-agent-es",
   "description": "Fork en español de México de linkedin-agent (Jake Schincariol, MIT). Once skills de Claude para LinkedIn; el humanizador li-human incluye léxico en español (slop-es.json), huellas y avisos, y puntaje como referencia.",
-  "version": "1.0.1-es",
+  "version": "1.0.2-es",
   "author": {
     "name": "Jake Schincariol",
     "url": "https://opusjake.ai"
@@ -9,5 +9,13 @@
   "homepage": "https://github.com/joseperezlara/linkedin-agent-skill",
   "repository": "https://github.com/joseperezlara/linkedin-agent-skill",
   "license": "MIT",
-  "keywords": ["linkedin", "content", "writing", "humanizer", "social", "marketing", "español"]
+  "keywords": [
+    "linkedin",
+    "content",
+    "writing",
+    "humanizer",
+    "social",
+    "marketing",
+    "español"
+  ]
 }
